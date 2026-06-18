@@ -122,7 +122,14 @@
     latestRegisteredRecord = record;
     saveRecords(records);
 
-    transmitDtmfPayload(payload);
+    transmitDtmfPayload(payload)
+      .then(function () {
+        validationMessage.textContent = "Tone transmitted.";
+      })
+      .catch(function () {
+        validationMessage.textContent = "Audio could not start. Turn off Silent Mode, raise the volume, and tap Replay Tone.";
+        addLog("Audio transmission was blocked by the browser.", true);
+      });
     firstNameInput.value = "";
     validationMessage.textContent = "";
     render();
@@ -137,8 +144,15 @@
     }
 
     var payload = buildPayload(latestRegisteredRecord);
-    transmitDtmfPayload(payload);
-    addLog("Replayed Subject " + latestRegisteredRecord.id + " without saving a subject record.", false);
+    transmitDtmfPayload(payload)
+      .then(function () {
+        validationMessage.textContent = "Tone replayed.";
+        addLog("Replayed Subject " + latestRegisteredRecord.id + " without saving a subject record.", false);
+      })
+      .catch(function () {
+        validationMessage.textContent = "Audio could not start. Turn off Silent Mode, raise the volume, and tap Replay Tone again.";
+        addLog("Replay was blocked by the browser.", true);
+      });
   }
 
   function normalizeName(value) {
@@ -221,14 +235,24 @@
   }
 
   function transmitDtmfPayload(payload) {
-    var context = getAudioContext();
-    if (context.state === "suspended") {
-      context.resume();
+    var context;
+    var ready;
+    try {
+      context = getAudioContext();
+      ready = context.state === "running" ? Promise.resolve() : context.resume();
+    } catch (error) {
+      return Promise.reject(error);
     }
 
-    var startTime = context.currentTime + 0.02;
-    Array.from(payload).forEach(function (symbol, index) {
-      scheduleDtmfTone(context, symbol, startTime + index * (TONE_DURATION_SECONDS + GAP_SECONDS));
+    return Promise.resolve(ready).then(function () {
+      if (context.state !== "running") {
+        throw new Error("AudioContext did not enter the running state.");
+      }
+
+      var startTime = context.currentTime + 0.05;
+      Array.from(payload).forEach(function (symbol, index) {
+        scheduleDtmfTone(context, symbol, startTime + index * (TONE_DURATION_SECONDS + GAP_SECONDS));
+      });
     });
   }
 
