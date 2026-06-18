@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent
 TEMP_ROOT = Path("C:/tmp")
 DTMF_ROWS = [697, 770, 852, 941]
 DTMF_COLS = [1209, 1336, 1477, 1633]
+SYMBOL_CADENCE_SECONDS = 0.11
 DTMF_SYMBOLS = {
     (697, 1209): "1",
     (697, 1336): "2",
@@ -230,17 +231,20 @@ def decode_audio(
         col_freq = max(set(col_votes), key=col_votes.count)
         start_seconds = starts[0] / sample_rate
         end_seconds = (starts[-1] + window_size) / sample_rate
-        tones.append(
-          ToneFrame(
-              index=len(tones) + 1,
-              start_seconds=start_seconds,
-              end_seconds=end_seconds,
-              symbol=run_symbol,
-              row_hz=row_freq,
-              col_hz=col_freq,
-              confidence=confidence,
-          )
-        )
+        repeat_count = max(1, round((end_seconds - start_seconds) / SYMBOL_CADENCE_SECONDS))
+        segment_seconds = (end_seconds - start_seconds) / repeat_count
+        for repeat_index in range(repeat_count):
+            tones.append(
+              ToneFrame(
+                  index=len(tones) + 1,
+                  start_seconds=start_seconds + repeat_index * segment_seconds,
+                  end_seconds=start_seconds + (repeat_index + 1) * segment_seconds,
+                  symbol=run_symbol,
+                  row_hz=row_freq,
+                  col_hz=col_freq,
+                  confidence=confidence,
+              )
+            )
         run_symbol = None
         run_items = []
 

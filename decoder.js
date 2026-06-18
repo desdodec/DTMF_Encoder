@@ -3,6 +3,7 @@
 
   var ROWS = [697, 770, 852, 941];
   var COLS = [1209, 1336, 1477, 1633];
+  var SYMBOL_CADENCE_SECONDS = 0.11;
   var SYMBOLS = {
     "697:1209": "1",
     "697:1336": "2",
@@ -318,15 +319,22 @@
         colVotes[item.colHz] = (colVotes[item.colHz] || 0) + 1;
         confidence += item.confidence;
       });
-      tones.push({
-        index: tones.length + 1,
-        symbol: symbol,
-        startSeconds: run[0].start / sampleRate,
-        endSeconds: (run[run.length - 1].start + windowSize) / sampleRate,
-        rowHz: Number(bestVote(rowVotes)),
-        colHz: Number(bestVote(colVotes)),
-        confidence: confidence / run.length
-      });
+      var startSeconds = run[0].start / sampleRate;
+      var endSeconds = (run[run.length - 1].start + windowSize) / sampleRate;
+      var repeatCount = Math.max(1, Math.round((endSeconds - startSeconds) / SYMBOL_CADENCE_SECONDS));
+      var segmentSeconds = (endSeconds - startSeconds) / repeatCount;
+
+      for (var repeatIndex = 0; repeatIndex < repeatCount; repeatIndex += 1) {
+        tones.push({
+          index: tones.length + 1,
+          symbol: symbol,
+          startSeconds: startSeconds + repeatIndex * segmentSeconds,
+          endSeconds: startSeconds + (repeatIndex + 1) * segmentSeconds,
+          rowHz: Number(bestVote(rowVotes)),
+          colHz: Number(bestVote(colVotes)),
+          confidence: confidence / run.length
+        });
+      }
       run = [];
       symbol = null;
     }
