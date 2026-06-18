@@ -311,7 +311,7 @@
   }
 
   function loadContactSettings() {
-    return { name: "Cycle Gait Project", email: "desdodec@gmail.com" };
+    return { name: "Cycle Gait Project", email: "tessellnationstation@gmail.com" };
   }
 
   function isValidRecord(record) {
