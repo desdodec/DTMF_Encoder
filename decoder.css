@@ -154,6 +154,12 @@ h2 {
   font-size: 1.05rem;
 }
 
+.drop-zone small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
 .file-input {
   position: absolute;
   width: 1px;

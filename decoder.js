@@ -52,6 +52,11 @@
     }
   });
 
+  audioFileInput.addEventListener("click", function () {
+    // Allow Android file providers to return the same recording more than once.
+    audioFileInput.value = "";
+  });
+
   ["dragenter", "dragover"].forEach(function (eventName) {
     dropZone.addEventListener(eventName, function (event) {
       event.preventDefault();
