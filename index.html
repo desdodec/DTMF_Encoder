@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cycle Gait Audio Tagger</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Field registration</p>
+            <h1 id="app-title">Cycle Gait Audio Tagger</h1>
+          </div>
+          <div class="top-actions">
+            <a class="nav-link" href="decoder.html">Decoder</a>
+            <div class="status-pill" id="nextSubjectLabel" aria-live="polite">Ready for Subject 001</div>
+          </div>
+        </header>
+
+        <div class="primary-grid">
+          <section class="panel registration-panel" aria-labelledby="registration-title">
+            <div class="section-heading">
+              <h2 id="registration-title">Register Subject</h2>
+              <p id="recordCount">0 saved records</p>
+            </div>
+
+            <form id="registrationForm" novalidate>
+              <label for="firstName">First name</label>
+              <div class="input-row">
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  autocomplete="off"
+                  list="nameSuggestions"
+                  inputmode="text"
+                  placeholder="ALEX"
+                  aria-describedby="validationMessage"
+                  aria-controls="namePredictionList"
+                  aria-expanded="false"
+                >
+                <button type="submit" class="primary-action">Register &amp; Transmit</button>
+              </div>
+              <ul id="namePredictionList" class="prediction-list" role="listbox" aria-label="First name suggestions"></ul>
+              <datalist id="nameSuggestions">
+                <option value="ALEX"></option>
+                <option value="AMELIA"></option>
+                <option value="ARCHIE"></option>
+                <option value="AVA"></option>
+                <option value="CHARLIE"></option>
+                <option value="DAISY"></option>
+                <option value="DANIEL"></option>
+                <option value="DAVID"></option>
+                <option value="DAVINA"></option>
+                <option value="EMILY"></option>
+                <option value="ETHAN"></option>
+                <option value="EVIE"></option>
+                <option value="FREYA"></option>
+                <option value="GEORGE"></option>
+                <option value="GRACE"></option>
+                <option value="HARRY"></option>
+                <option value="ISLA"></option>
+                <option value="JACK"></option>
+                <option value="JACOB"></option>
+                <option value="JAMES"></option>
+                <option value="LEO"></option>
+                <option value="LILY"></option>
+                <option value="LUCAS"></option>
+                <option value="MAISIE"></option>
+                <option value="MIA"></option>
+                <option value="MUHAMMAD"></option>
+                <option value="NOAH"></option>
+                <option value="OLIVER"></option>
+                <option value="OLIVIA"></option>
+                <option value="OSCAR"></option>
+                <option value="POPPY"></option>
+                <option value="SOPHIA"></option>
+                <option value="THOMAS"></option>
+                <option value="WILLOW"></option>
+              </datalist>
+              <p id="validationMessage" class="validation-message" role="status"></p>
+            </form>
+
+            <div class="tone-actions">
+              <button type="button" id="replayToneButton">Replay Tone</button>
+            </div>
+
+            <div class="summary-strip" aria-label="Current transmission settings">
+              <div>
+                <span>Frame</span>
+                <strong id="payloadPreview">Full frame after registration</strong>
+              </div>
+              <div>
+                <span>Tone</span>
+                <strong>80ms</strong>
+              </div>
+              <div>
+                <span>Gap</span>
+                <strong>30ms</strong>
+              </div>
+              <div>
+                <span>Gain</span>
+                <strong>0.25</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel admin-panel" aria-labelledby="admin-title">
+            <div class="section-heading">
+              <h2 id="admin-title">Session Data</h2>
+              <p>Local browser storage</p>
+            </div>
+            <div class="admin-actions">
+              <button type="button" id="exportCsvButton">Export CSV</button>
+              <button type="button" id="resetDataButton" class="danger-action">Reset Session Data</button>
+            </div>
+            <div class="table-wrap" tabindex="0" aria-label="Saved subject records">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel qr-panel" aria-labelledby="qr-title">
+            <div class="section-heading">
+              <h2 id="qr-title">Participant QR</h2>
+              <p id="qrStatus">Register a subject to generate a vCard QR.</p>
+            </div>
+            <div class="qr-grid">
+              <div class="qr-canvas-wrap">
+                <canvas id="vcardQrCanvas" width="190" height="190" aria-label="vCard QR code"></canvas>
+              </div>
+              <div class="qr-details">
+                <p id="qrSubjectLabel">No subject selected</p>
+                <textarea id="vcardText" readonly aria-label="Generated vCard text"></textarea>
+                <button type="button" id="copyVcardButton">Copy vCard Text</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="vendor/qrcode.js"></script>
+    <script src="app.js?v=20260618-full-record"></script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DTMF Decoder</title>
+    <link rel="stylesheet" href="decoder.css">
+  </head>
+  <body>
+    <main class="decoder-shell">
+      <header class="decoder-header">
+        <div>
+          <p class="eyebrow">Local audio analysis</p>
+          <h1>DTMF Decoder</h1>
+        </div>
+        <a class="nav-link" href="index.html">Registration</a>
+      </header>
+
+      <section class="decoder-grid">
+        <section class="panel input-panel" aria-labelledby="input-title">
+          <div class="panel-heading">
+            <h2 id="input-title">Recording</h2>
+            <p id="fileStatus">No file loaded</p>
+          </div>
+
+          <label id="dropZone" class="drop-zone" for="audioFile">
+            <span>Drop audio here</span>
+            <strong>or choose MP4 / WAV / M4A</strong>
+          </label>
+          <input id="audioFile" class="file-input" type="file" accept="audio/*,video/mp4,.m4a,.mp4,.wav">
+
+          <div class="control-grid">
+            <label>
+              Window ms
+              <input id="windowMs" type="number" min="15" max="120" step="5" value="20">
+            </label>
+            <label>
+              Hop ms
+              <input id="hopMs" type="number" min="2" max="40" step="1" value="5">
+            </label>
+            <label>
+              Min tone ms
+              <input id="minToneMs" type="number" min="10" max="100" step="5" value="25">
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="loadSampleButton" type="button">Load Test Recording</button>
+            <button id="decodeButton" type="button" disabled>Decode</button>
+            <button id="exportJsonButton" type="button" disabled>Export JSON</button>
+          </div>
+        </section>
+
+        <section class="panel summary-panel" aria-labelledby="summary-title">
+          <div class="panel-heading">
+            <h2 id="summary-title">Result</h2>
+            <p id="decodeStatus">Waiting for audio</p>
+          </div>
+
+          <div class="metric-grid">
+            <div>
+              <span>Subject ID</span>
+              <strong id="subjectId">-</strong>
+            </div>
+            <div>
+              <span>Name</span>
+              <strong id="subjectName">-</strong>
+            </div>
+            <div>
+              <span>Timestamp</span>
+              <strong id="subjectTimestamp">-</strong>
+            </div>
+            <div>
+              <span>Framed</span>
+              <strong id="framedPayload">-</strong>
+            </div>
+            <div>
+              <span>Raw</span>
+              <strong id="rawPayload">-</strong>
+            </div>
+            <div>
+              <span>Duration</span>
+              <strong id="durationLabel">-</strong>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel waveform-panel" aria-labelledby="waveform-title">
+        <div class="panel-heading">
+          <h2 id="waveform-title">Waveform &amp; Tone Timeline</h2>
+          <p id="toneCount">0 tones</p>
+        </div>
+        <canvas id="waveformCanvas" width="1200" height="280" aria-label="Waveform and decoded tone timeline"></canvas>
+      </section>
+
+      <section class="panel table-panel" aria-labelledby="tones-title">
+        <div class="panel-heading">
+          <h2 id="tones-title">Detected Tones</h2>
+          <p>Start/end times are seconds from recording start</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Symbol</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Frequencies</th>
+                <th>Confidence</th>
+              </tr>
+            </thead>
+            <tbody id="toneTableBody">
+              <tr class="empty-row"><td colspan="6">No tones decoded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="decoder.js?v=20260618-repeat-safe"></script>
+  </body>
+</html>
